@@ -111,8 +111,7 @@ void registerUser() {
         }
     } while (newUser.password != confirmPassword);
 
-    cout << "Введите роль (1 - пользователь, 2 - администратор): ";
-    cin >> newUser.role;
+    newUser.role = 1;
 
     users[usersCount++] = newUser;
     newUser.password = sha256(newUser.password);
@@ -246,10 +245,10 @@ void userActions() {
             showTickets();
             break;
         case 5:
-            searchTickets(); // Вызов функции поиска
+            searchTickets(); 
             break;
         case 6:
-            cout << "Выход...\n";
+            cout << "Выход\n";
             break;
         default:
             cout << "Неверный выбор, попробуйте еще раз\n";
@@ -277,13 +276,13 @@ void adminActions() {
             showTickets();
             break;
         case 5:
-            searchTickets(); // Вызов функции поиска
+            searchTickets();
             break;
         case 6:
             manageUsers();
             break;
         case 7:
-            cout << "Выход...\n";
+            cout << "Выход\n";
             break;
         default:
             cout << "Неверный выбор, попробуйте еще раз\n";
@@ -328,8 +327,7 @@ void editTicket() {
 
     for (int i = 0; i < ticketsCount; ++i) {
         if (tickets[i].ticketID == ticketID) {
-            // Введите новые данные для билета и сохраните их (аналогично функции createTicket)
-            // ...
+            // редактирование билета
             saveTickets();
             cout << "Экзаменационный билет успешно отредактирован\n";
             return;
@@ -371,7 +369,6 @@ void manageUsers() {
 
         switch (choice) {
         case 1:
-            // Вывод списка пользователей и их ролей
             cout << "Список пользователей:\n";
             for (int i = 0; i < usersCount; ++i) {
                 cout << "ID пользователя: " << i << ", имя пользователя: " << users[i].username << ", роль: " << (users[i].role == 1 ? "пользователь" : "администратор") << endl;
@@ -440,11 +437,12 @@ void showTickets() {
                 }
             }
         }
-        cout << "---------------------------------------" << endl;
+        cout << "_______________________________" << endl;
     }
 }
 
 string sha256(const string& data) {
+    //хэширование, написать подробные комментарии
     unsigned char hash[SHA256_DIGEST_LENGTH];
     SHA256_CTX sha256;
     SHA256_Init(&sha256);
