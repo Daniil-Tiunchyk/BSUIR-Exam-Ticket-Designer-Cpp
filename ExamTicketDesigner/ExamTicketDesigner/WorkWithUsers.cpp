@@ -44,7 +44,7 @@ void registerUser(User users[], int& usersCount) {
 
     saveUsers(users, usersCount);
 
-    cout << "Пользователь успешно зарегистрирован\n";
+    cout << "\nПользователь успешно зарегистрирован\n";
     Sleep(2000);
     system("cls");
 }
@@ -66,7 +66,7 @@ int loginUser(User users[], int usersCount) {
             }
         }
 
-        cout << "Неверное имя пользователя или пароль. Осталось попыток: " << --loginAttempts << endl;
+        cout << "\nНеверное имя пользователя или пароль. Осталось попыток: " << --loginAttempts << endl;
     }
     cout << "Авторизация не удалась. Пожалуйста, попробуйте позже\n";
     return 0;
@@ -108,12 +108,12 @@ void loadUsers(User users[], int& usersCount) {
 
 // Функция, реализующая действия администратора
 void adminActions(User users[], int usersCount) {
-    system("cls");
     loadUsers(users, usersCount);
 
     int choice;
     do {
-        cout << "Выберите действие:\n\t1. Работа с билетами\n\t2. Управление пользователями\n\t3. Выйти\n\t\t>>>";
+        system("cls");
+        cout << "\n\t\tМеню:\n\t1. Работа с билетами\n\t2. Управление пользователями\n\t3. Выйти\n\t\t>>> ";
         choice=protection(1,3);
         switch (choice) {
         case 1:
@@ -137,17 +137,20 @@ void manageUsers(User users[], int usersCount) {
     string newUsername, newPassword;
     int newRole;
     do {
-        cout << "Выберите действие:\n1. Просмотреть список пользователей\n2. Редактировать пользователя\n3. Удалить пользователя\n4. Выйти\n";
-        choice=protection(1,4);
+        system("cls");
+        cout << "\n\tСписок пользователей:\n"
+            << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n"
+            << "| ID | Имя Пользователя | Роль в системе  |\n";
+
+        for (int i = 0; i < usersCount; ++i) {
+            cout << "|  " << i << " | " << setw(15) << users[i].username << "  | " << setw(15) << (users[i].role == 1 ? "пользователь" : "администратор") << " |\n";
+        }
+        cout << "|_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|\n\n"
+        << "\n\t\tМеню:\n1. Редактировать пользователя\n2. Удалить пользователя\n3. Выйти\n\t>>>";
+        choice=protection(1,3);
 
         switch (choice) {
         case 1:
-            cout << "Список пользователей:\n";
-            for (int i = 0; i < usersCount; ++i) {
-                cout << "ID пользователя: " << i << ", имя пользователя: " << users[i].username << ", роль: " << (users[i].role == 1 ? "пользователь" : "администратор") << endl;
-            }
-            break;
-        case 2:
             // Редактирование пользователя
             cout << "Введите ID пользователя для редактирования: ";
             userId=protection(1,100);
@@ -172,7 +175,7 @@ void manageUsers(User users[], int usersCount) {
                 cout << "Пользователь с указанным ID не найден\n";
             }
             break;
-        case 3:
+        case 2:
             // Удаление пользователя
             cout << "Введите ID пользователя для удаления: ";
             userId=protection(1,100);
@@ -183,16 +186,16 @@ void manageUsers(User users[], int usersCount) {
                 --usersCount;
                 saveUsers(users, usersCount);
                 cout << "Пользователь успешно удален\n";
+                Sleep(2000);
             }
             else {
                 cout << "Пользователь с указанным ID не найден\n";
             }
             break;
-        case 4:
-            cout << "Выход...\n";
+        case 3:
             break;
         default:
             cout << "Неверный выбор, попробуйте еще раз\n";
         }
-    } while (choice != 4);
+    } while (choice != 3);
 }

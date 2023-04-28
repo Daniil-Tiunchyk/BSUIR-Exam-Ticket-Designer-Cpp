@@ -1,5 +1,4 @@
 #pragma once
-
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -32,3 +31,4 @@ void editTicket(ExamTicket tickets[], int ticketsCount);
 void deleteTicket(ExamTicket tickets[], int& ticketsCount);
 void showTickets(const ExamTicket tickets[], int ticketsCount);
 void searchTickets(const ExamTicket tickets[], int ticketsCount);
+void bubbleSortBySubject(ExamTicket tickets[], int ticketsCount);

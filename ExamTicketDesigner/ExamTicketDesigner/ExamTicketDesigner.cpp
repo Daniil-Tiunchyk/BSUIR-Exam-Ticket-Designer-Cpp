@@ -14,12 +14,6 @@
 using namespace std;
 
 int main() {
-    // /t/t/t/t/...
-    //setw(40)
-    // _ _ _
-    //				Sleep(2000);
-    //system("cls");
-    //inputPassword
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
@@ -29,7 +23,7 @@ int main() {
 
     int choice, ind;
     do {
-        cout << "Выберите действие:\n\t1. Регистрация\n\t2. Вход\n\t3. Выход\n\t\t>>> ";
+        cout << "\n\t\tМеню\n\t1. Регистрация\n\t2. Вход\n\t3. Выход\n\t\t>>> ";
         choice = protection(1,3);
         loadUsers(users, usersCount);
         switch (choice) {
@@ -45,7 +39,7 @@ int main() {
         case 3:
             break;
         default:
-            cout << "Неверный выбор, попробуйте еще раз\n\n";
+            cout << "\tНеверный выбор, попробуйте еще раз\n\n";
         }
     } while (choice != 3);
 
