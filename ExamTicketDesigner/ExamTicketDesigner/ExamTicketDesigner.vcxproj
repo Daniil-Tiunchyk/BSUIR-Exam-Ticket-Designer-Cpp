@@ -128,6 +128,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ExamTicketDesigner.cpp" />
+    <ClCompile Include="MakeHash.cpp" />
+    <ClCompile Include="ProtectionSource.cpp" />
+    <ClCompile Include="WorkWithTickets.cpp" />
+    <ClCompile Include="WorkWithUsers.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MakeHash.h" />
+    <ClInclude Include="Protection.h" />
+    <ClInclude Include="WorkWithTickets.h" />
+    <ClInclude Include="WorkWithUsers.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
