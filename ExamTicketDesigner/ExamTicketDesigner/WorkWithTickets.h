@@ -31,4 +31,4 @@ void editTicket(ExamTicket tickets[], int ticketsCount);
 void deleteTicket(ExamTicket tickets[], int& ticketsCount);
 void showTickets(const ExamTicket tickets[], int ticketsCount);
 void searchTickets(const ExamTicket tickets[], int ticketsCount);
-void bubbleSortBySubject(ExamTicket tickets[], int ticketsCount);
+void sortTickets(ExamTicket tickets[], int ticketsCount);

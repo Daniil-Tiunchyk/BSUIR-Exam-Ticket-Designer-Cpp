@@ -23,6 +23,7 @@ int main() {
 
     int choice, ind;
     do {
+        system("cls");
         cout << "\n\t\tМеню\n\t1. Регистрация\n\t2. Вход\n\t3. Выход\n\t\t>>> ";
         choice = protection(1,3);
         loadUsers(users, usersCount);

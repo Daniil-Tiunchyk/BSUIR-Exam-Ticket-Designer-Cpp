@@ -1,2 +1,3 @@
-﻿  WorkWithUsers.cpp
+﻿  WorkWithTickets.cpp
+C:\!Curseworks\Exam-Ticket-Designer\ExamTicketDesigner\ExamTicketDesigner\WorkWithTickets.cpp(36,10): warning C4102: case7: неиспользованная метка
   ExamTicketDesigner.vcxproj -> C:\!Curseworks\Exam-Ticket-Designer\ExamTicketDesigner\x64\Debug\ExamTicketDesigner.exe

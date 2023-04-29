@@ -31,7 +31,7 @@ void userActions() {
             searchTickets(tickets, ticketsCount);
             break;
         case 6: 
-            bubbleSortBySubject(tickets, ticketsCount);
+            sortTickets(tickets, ticketsCount);
             break;
          case7:
             cout << "Выход\n";
@@ -49,7 +49,7 @@ void createTicket(ExamTicket tickets[], int& ticketsCount) {
     newTicket.ticketID = protection(1,100);
     cout << "Введите предмет: ";
     cin >> newTicket.subject;
-
+    cin.ignore();
     for (int i = 0; i < 5; ++i) {
         cout << "\nВведите текст вопроса " << i + 1 << ": ";
         getline(cin, newTicket.questions[i].questionText);
@@ -57,7 +57,7 @@ void createTicket(ExamTicket tickets[], int& ticketsCount) {
         newTicket.questions[i].questionType = protection(1,3);
         if (newTicket.questions[i].questionType != 3) {
             for (int j = 0; j < 4; ++j) {
-                cout << "Введите вариант ответа " << j + 1 << ": ";
+                cout << "\tВведите вариант ответа " << j + 1 << ": ";
                     getline(cin, newTicket.questions[i].answers[j]);
             }
         }
@@ -79,16 +79,16 @@ void editTicket(ExamTicket tickets[], int ticketsCount) {
             cin.ignore();
             getline(cin, tickets[i].subject);
 
-            for (int q = 0; q < 5; ++q) {
-                cout << "Введите новый текст вопроса " << q + 1 << ": ";
-                getline(cin, tickets[i].questions[q].questionText);
+            for (int j = 0; j < 5; ++j) {
+                cout << "Введите новый текст вопроса " << j + 1 << ": ";
+                getline(cin, tickets[i].questions[j].questionText);
 
-                cout << "Введите новый тип вопроса " << q + 1 << ": ";
-                tickets[i].questions[q].questionType = protection(1, 5);
+                cout << "Введите новый тип вопроса " << j + 1 << ": ";
+                tickets[i].questions[j].questionType = protection(1, 5);
 
                 for (int a = 0; a < 4; ++a) {
-                    cout << "Введите новый ответ " << a + 1 << " для вопроса " << q + 1 << ": ";
-                    getline(cin, tickets[i].questions[q].answers[a]);
+                    cout << "Введите новый ответ " << a + 1 << " для вопроса " << j + 1 << ": ";
+                    getline(cin, tickets[i].questions[j].answers[a]);
                 }
             }
 
@@ -123,52 +123,49 @@ void deleteTicket(ExamTicket tickets[], int& ticketsCount) {
 
 // Функция отображения списка экзаменационных билетов
 void showTickets(const ExamTicket tickets[], int ticketsCount) {
-    int t = -2134;
-    do {
         cout << "\n\tСписок билетов:\n"
-            << " _ _ _ _ _ _ _ _ _ _ _ _ _\n"
-            << "| Номер билета | Предмет |\n"
-            << " _ _ _ _ _ _ _ _ _ _ _ _ _\n";
+            << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n"
+            << "| Номер билета " << setw(15) << " | " << setw(15) << " Предмет |\n"
+            << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n";
 
         for (int i = 0; i < ticketsCount; ++i) {
-            cout << "| " << tickets[i].ticketID << " | " << setw(15) << tickets[i].subject << endl;
+            cout << "| " << setw(15) << left << "№" << tickets[i].ticketID << " | " << setw(15) << left << tickets[i].subject << "|\n";
             for (int j = 0; j < 5; ++j) {
-                cout << "| Вопрос " << j + 1 << ": " << tickets[i].questions[j].questionText << ", тип вопроса: " << tickets[i].questions[j].questionType << endl;
+                cout << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n"
+                    << "| Вопрос " << j + 1 << ": " << setw(15) << left << tickets[i].questions[j].questionText << ", тип вопроса: " << tickets[i].questions[j].questionType << endl;
                 if (tickets[i].questions[j].questionType != 3) {
-                    cout << "|_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|\n"
-                    << "| Варианты ответов:\n";
+                    cout << "\tВарианты ответов:\n";
                     for (int k = 0; k < 4; ++k) {
-                        cout << "| " << tickets[i].questions[j].answers[k] << " |\n";
+                        cout << "\t\t" << tickets[i].questions[j].answers[k] << "\n";
                     }
                 }
             }
             cout << "|_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|\n\n";
         }
         cout << "Введите любое число, чтобы продолжить\n\t>>> ";
-
-        t = protection(-2133,2133);
-    } while (t==-2134);
+        system("pause");
 }
+
 
 void searchTickets(const ExamTicket tickets[], int ticketsCount) {
     string subject;
     cout << "Введите предмет для поиска билетов: ";
-    cin.ignore();
+    //cin.ignore();
     getline(cin, subject);
     bool found = false;
     for (int i = 0; i < ticketsCount; ++i) {
         if (tickets[i].subject == subject) {
             found = true;
-            cout << "ID билета: " << tickets[i].ticketID << ", предмет: " << tickets[i].subject << endl;
+            cout << "Номер билета: " << tickets[i].ticketID << ", предмет: " << tickets[i].subject << endl;
         }
     }
 
     if (!found) {
-        cout << "Экзаменационные билеты по заданному предмету не найдены." << endl;
+        cout << "Экзаменационные билеты по заданному предмету не найдены.\n";
     }
-    Sleep(2000);
+    system("pause");
 }
-void bubbleSortBySubject(ExamTicket tickets[], int ticketsCount) {
+void sortTickets(ExamTicket tickets[], int ticketsCount) {
     for (int i = 0; i < ticketsCount - 1; ++i) {
         for (int j = 0; j < ticketsCount - i - 1; ++j) {
             if (tickets[j].subject > tickets[j + 1].subject) {
@@ -191,52 +188,71 @@ void bubbleSortBySubject(ExamTicket tickets[], int ticketsCount) {
         }
         cout << "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n";
     }
-    Sleep(4000);
+    system("pause");
+}
+void writeQuestion(ofstream& out, const Question& question) {
+    out << question.questionText << endl;
+    out << question.questionType << endl;
+    for (const string& answer : question.answers) {
+        out << answer << endl;
+    }
 }
 
-// Функция сохранения экзаменационных билетов в файл
-void saveTickets(const string& ticketsFilename, ExamTicket tickets[], int ticketsCount) {
-    ofstream ticketsFile(ticketsFilename);
+void readQuestion(ifstream& in, Question& question) {
+    getline(in, question.questionText);
+    in >> question.questionType;
+    in.ignore();
+    for (string& answer : question.answers) {
+        getline(in, answer);
+    }
+}
 
-    if (!ticketsFile) {
-        cerr << "Ошибка открытия файла с билетами\n";
+void writeExamTicket(ofstream& out, const ExamTicket& ticket) {
+    out << ticket.ticketID << endl;
+    out << ticket.subject << endl;
+    for (const Question& question : ticket.questions) {
+        writeQuestion(out, question);
+    }
+}
+
+void readExamTicket(ifstream& in, ExamTicket& ticket) {
+    in >> ticket.ticketID;
+    in.ignore();
+    getline(in, ticket.subject);
+    for (Question& question : ticket.questions) {
+        readQuestion(in, question);
+    }
+}
+
+// Функция сохранения массива ExamTicket в файл
+void saveTickets(const string& filename, ExamTicket tickets[], int ticketsCount) {
+    ofstream out(filename);
+    if (!out.is_open()) {
+        cerr << "Не удалось открыть файл для записи: " << filename << endl;
         return;
     }
 
+    out << ticketsCount << endl;
     for (int i = 0; i < ticketsCount; ++i) {
-        ticketsFile << tickets[i].ticketID << " " << tickets[i].subject << endl;
-        for (int j = 0; j < 5; ++j) {
-            ticketsFile << tickets[i].questions[j].questionText << " " << tickets[i].questions[j].questionType << endl;
-            for (int k = 0; k < 4; ++k) {
-                ticketsFile << tickets[i].questions[j].answers[k] << endl;
-            }
-        }
+        writeExamTicket(out, tickets[i]);
     }
 
-    ticketsFile.close();
+    out.close();
 }
 
-// Функция загрузки экзаменационных билетов из файла
-void loadTickets(const string& ticketsFilename, ExamTicket tickets[], int& ticketsCount) {
-    ifstream ticketsFile(ticketsFilename);
-    if (!ticketsFile) {
-        cerr << "Ошибка открытия файла с билетами. Создание нового файла...\n";
-        ofstream newTicketsFile(ticketsFilename);
-        newTicketsFile.close();
-        ticketsCount = 0;
+// Функция загрузки массива ExamTicket из файла
+void loadTickets(const string& filename, ExamTicket tickets[], int& ticketsCount) {
+    ifstream in(filename);
+    if (!in.is_open()) {
+        cerr << "Не удалось открыть файл для чтения: " << filename << endl;
         return;
     }
 
-    ticketsCount = 0;
-    while (ticketsFile >> tickets[ticketsCount].ticketID >> tickets[ticketsCount].subject) {
-        for (int j = 0; j < 5; ++j) {
-            ticketsFile >> tickets[ticketsCount].questions[j].questionText >> tickets[ticketsCount].questions[j].questionType;
-            for (int k = 0; k < 4; ++k) {
-                ticketsFile >> tickets[ticketsCount].questions[j].answers[k];
-            }
-        }
-        ++ticketsCount;
+    in >> ticketsCount;
+    in.ignore();
+    for (int i = 0; i < ticketsCount; ++i) {
+        readExamTicket(in, tickets[i]);
     }
 
-    ticketsFile.close();
+    in.close();
 }
