@@ -21,7 +21,7 @@ int main() {
     User users[maxUsers];
     int usersCount = 0;
 
-    int choice, ind;
+    int choice, ind, onlineUser = 0;
     do {
         system("cls");
         cout << "\n\t\tМеню\n\t1. Регистрация\n\t2. Вход\n\t3. Выход\n\t\t>>> ";
@@ -32,9 +32,9 @@ int main() {
             registerUser(users, usersCount);
             break;
         case 2:
-            ind = loginUser(users, usersCount);
+            ind = loginUser(users, usersCount, onlineUser);
             if (ind == 1) userActions(); 
-            if (ind == 2) adminActions(users, usersCount);
+            if (ind == 2) adminActions(users, usersCount, onlineUser);
 
             break;
         case 3:

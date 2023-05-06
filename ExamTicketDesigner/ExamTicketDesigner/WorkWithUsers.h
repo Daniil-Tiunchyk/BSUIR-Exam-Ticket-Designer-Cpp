@@ -22,8 +22,8 @@ const string usersFilename = "users.txt";
 
 void loadUsers(User users[], int& usersCount);
 void registerUser(User users[], int& usersCount);
-int loginUser(User users[], int usersCount);
+int loginUser(User users[], int usersCount, int& onlineUser);
 void userActions();
-void adminActions(User users[], int usersCount);
+void adminActions(User users[], int usersCount, int onlineUser);
 void saveUsers(User users[], int usersCount);
-void manageUsers(User users[], int usersCount);
+void manageUsers(User users[], int usersCount, int onlineUser);

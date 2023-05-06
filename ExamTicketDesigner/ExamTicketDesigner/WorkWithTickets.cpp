@@ -142,7 +142,6 @@ void showTickets(const ExamTicket tickets[], int ticketsCount) {
             }
             cout << "|_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|\n\n";
         }
-        cout << "Введите любое число, чтобы продолжить\n\t>>> ";
         system("pause");
 }
 
@@ -166,30 +165,60 @@ void searchTickets(const ExamTicket tickets[], int ticketsCount) {
     system("pause");
 }
 void sortTickets(ExamTicket tickets[], int ticketsCount) {
-    for (int i = 0; i < ticketsCount - 1; ++i) {
-        for (int j = 0; j < ticketsCount - i - 1; ++j) {
-            if (tickets[j].subject > tickets[j + 1].subject) {
-                ExamTicket temp = tickets[j];
-                tickets[j] = tickets[j + 1];
-                tickets[j + 1] = temp;
-            }
-        }
-    }
-    for (int i = 0; i < ticketsCount; ++i) {
-        cout << "Номер билета: " << tickets[i].ticketID << ", Предмет: " << tickets[i].subject << endl;
-        for (int j = 0; j < 5; ++j) {
-            cout << "Вопрос " << j + 1 << ": " << tickets[i].questions[j].questionText << ", тип вопроса: " << tickets[i].questions[j].questionType << endl;
-            if (tickets[i].questions[j].questionType != 3) {
-                cout << "Варианты ответов:\n";
-                for (int k = 0; k < 4; ++k) {
-                    cout << tickets[i].questions[j].answers[k] << endl;
+    int choice;
+    do {
+        system("cls");
+        cout << "\n\t\tМеню сортировок:\n\t1. Сортировка по номеру билета\n\t2. Сортировка по номеру билета в обратном порядке\n\t3. Сортировка по предмету\n\t4. Выйти\n\t\t>>> ";
+        choice = protection(1, 4);
+
+        switch (choice) {
+        case 1:
+            for (int i = 0; i < ticketsCount - 1; ++i) {
+                for (int j = 0; j < ticketsCount - i - 1; ++j) {
+                    if (tickets[j].ticketID > tickets[j + 1].ticketID) {
+                        ExamTicket temp = tickets[j];
+                        tickets[j] = tickets[j + 1];
+                        tickets[j + 1] = temp;
+                    }
                 }
             }
+            showTickets(tickets, ticketsCount);
+            break;
+        case 2:
+            for (int i = 0; i < ticketsCount - 1; ++i) {
+                for (int j = 0; j < ticketsCount - i - 1; ++j) {
+                    if (tickets[j].ticketID < tickets[j + 1].ticketID) {
+                        ExamTicket temp = tickets[j];
+                        tickets[j] = tickets[j + 1];
+                        tickets[j + 1] = temp;
+                    }
+                }
+            }
+            showTickets(tickets, ticketsCount);
+            break;
+        case 3:
+            for (int i = 0; i < ticketsCount - 1; ++i) {
+                for (int j = 0; j < ticketsCount - i - 1; ++j) {
+                    if (tickets[j].subject > tickets[j + 1].subject) {
+                        ExamTicket temp = tickets[j];
+                        tickets[j] = tickets[j + 1];
+                        tickets[j + 1] = temp;
+                    }
+                }
+            }
+            showTickets(tickets, ticketsCount);
+            break;
+        case 4:
+            cout << "Выход\n";
+            break;
+        default:
+            cout << "Неверный выбор, попробуйте еще раз\n";
         }
-        cout << "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n";
-    }
+    } while (choice != 4);
+
     system("pause");
 }
+
 void writeQuestion(ofstream& out, const Question& question) {
     out << question.questionText << endl;
     out << question.questionType << endl;

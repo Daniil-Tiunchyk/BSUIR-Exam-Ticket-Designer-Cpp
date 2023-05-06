@@ -50,7 +50,7 @@ void registerUser(User users[], int& usersCount) {
 }
 
 // Функция авторизации пользователя с валидацией
-int loginUser(User users[], int usersCount) {
+int loginUser(User users[], int usersCount, int& onlineUser) {
     string inputUsername, password;
     int loginAttempts = 3;
     while (loginAttempts > 0) {
@@ -62,6 +62,7 @@ int loginUser(User users[], int usersCount) {
         for (int i = 0; i < usersCount; ++i) {
             if (users[i].username == inputUsername && users[i].password == password) {
                 cout << "\nУспешная авторизация\n\n";
+                onlineUser = i;
                 return users[i].role;
             }
         }
@@ -107,7 +108,7 @@ void loadUsers(User users[], int& usersCount) {
 }
 
 // Функция, реализующая действия администратора
-void adminActions(User users[], int usersCount) {
+void adminActions(User users[], int usersCount, int onlineUser) {
     loadUsers(users, usersCount);
 
     int choice;
@@ -120,7 +121,7 @@ void adminActions(User users[], int usersCount) {
             userActions();
             break;
         case 2:
-            manageUsers(users, usersCount);
+            manageUsers(users, usersCount, onlineUser);
             break;
         case 3:
             cout << "Выход\n";
@@ -132,7 +133,7 @@ void adminActions(User users[], int usersCount) {
 }
 
 // Функция управления пользователями (только для администратора)
-void manageUsers(User users[], int usersCount) {
+void manageUsers(User users[], int usersCount, int onlineUser) {
     int choice, userId;
     string newUsername, newPassword;
     int newRole;
@@ -143,10 +144,10 @@ void manageUsers(User users[], int usersCount) {
             << "| ID | Имя Пользователя | Роль в системе  |\n";
 
         for (int i = 0; i < usersCount; ++i) {
-            cout << "|  " << i << " | " << setw(15) << users[i].username << "  | " << setw(15) << (users[i].role == 1 ? "пользователь" : "администратор") << " |\n";
+            cout << "|  " << i + 1 << " | " << setw(15) << users[i].username << "  | " << setw(15) << (users[i].role == 1 ? "пользователь" : "администратор") << " |\n";
         }
         cout << "|_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|\n\n"
-        << "\n\t\tМеню:\n1. Редактировать пользователя\n2. Удалить пользователя\n3. Выйти\n\t>>>";
+        << "\n\t\tМеню:\n\t1. Редактировать пользователя\n\t2. Удалить пользователя\n\t3. Выйти\n\t\t>>>";
         choice=protection(1,3);
 
         switch (choice) {
@@ -154,6 +155,7 @@ void manageUsers(User users[], int usersCount) {
             // Редактирование пользователя
             cout << "Введите ID пользователя для редактирования: ";
             userId=protection(1,100);
+            userId--;
             if (userId >= 0 && userId < usersCount) {
                 cout << "Введите новое имя пользователя: ";
                 cin >> newUsername;
@@ -179,17 +181,24 @@ void manageUsers(User users[], int usersCount) {
             // Удаление пользователя
             cout << "Введите ID пользователя для удаления: ";
             userId=protection(1,100);
-            if (userId >= 0 && userId < usersCount) {
-                for (int i = userId; i < usersCount - 1; ++i) {
-                    users[i] = users[i + 1];
+            userId--;
+            if (onlineUser != userId) {
+                if (userId >= 0 && userId < usersCount) {
+                    for (int i = userId; i < usersCount - 1; ++i) {
+                        users[i] = users[i + 1];
+                    }
+                    --usersCount;
+                    saveUsers(users, usersCount);
+                    cout << "Пользователь успешно удален\n";
+                    Sleep(2000);
                 }
-                --usersCount;
-                saveUsers(users, usersCount);
-                cout << "Пользователь успешно удален\n";
-                Sleep(2000);
+                else {
+                    cout << "Пользователь с указанным ID не найден\n";
+                }
             }
             else {
-                cout << "Пользователь с указанным ID не найден\n";
+                cout << "Вы не можете удалить себя\n";
+                Sleep(2000);
             }
             break;
         case 3:
