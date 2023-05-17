@@ -33,7 +33,7 @@ int main() {
             break;
         case 2:
             ind = loginUser(users, usersCount, onlineUser);
-            if (ind == 1) userActions(); 
+            if (ind == 1) userActions(users, usersCount, onlineUser);
             if (ind == 2) adminActions(users, usersCount, onlineUser);
 
             break;

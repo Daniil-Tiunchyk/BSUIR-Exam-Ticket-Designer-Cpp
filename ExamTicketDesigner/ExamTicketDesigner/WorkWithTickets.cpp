@@ -2,7 +2,7 @@
 #include "Protection.h"
 
 // Функция, реализующая действия пользователя
-void userActions() {
+void userActions(User users[], int usersCount, int onlineUser) {
     int choice;
     const int maxTickets = 100;
     int ticketsCount = 0;
@@ -11,8 +11,8 @@ void userActions() {
  
     do {
         system("cls");
-        cout << "\n\t\tМеню:\n\t1. Создать билет\n\t2. Редактировать билет\n\t3. Удалить билет\n\t4. Показать билеты\n\t5. Поиск билетов\n\t6. Отсортировать билеты\n\t7. Выйти\n\t\t>>> ";
-        choice = protection(1,7);
+        cout << "\n\t\tМеню:\n\t1. Создать билет\n\t2. Редактировать билет\n\t3. Редактировать вопрос в билете\n\t4. Удалить билет\n\t5. Показать билеты\n\t6. Поиск билетов\n\t7. Отсортировать билеты\n\t8. Сохранить билеты\n\t9. Сменить данные текущего аккаунта\n\t10. Выйти\n\t\t>>> ";
+        choice = protection(1, 10);
 
         switch (choice) {
         case 1:
@@ -22,24 +22,35 @@ void userActions() {
             editTicket(tickets, ticketsCount);
             break;
         case 3:
-            deleteTicket(tickets, ticketsCount);
+            showTickets(tickets, ticketsCount);
+            editQuestionInTicket(tickets, ticketsCount);
             break;
         case 4:
-            showTickets(tickets, ticketsCount);
+            deleteTicket(tickets, ticketsCount);
             break;
         case 5:
+            showTickets(tickets, ticketsCount);
+            break;
+        case 6:
             searchTickets(tickets, ticketsCount);
             break;
-        case 6: 
+        case 7: 
             sortTickets(tickets, ticketsCount);
             break;
-         case7:
+        case 8:
+            saveTickets(ticketsFilename, tickets, ticketsCount);
+            cout << "Билеты успешно сохранены.\n";
+            break;
+        case 9:
+            changeUserInfo(users, onlineUser, usersCount);
+            break;
+        case 10:
             cout << "Выход\n";
             break;
         default:
             cout << "Неверный выбор, попробуйте еще раз\n";
         }
-    } while (choice != 7);
+    } while (choice != 10);
 }
 
 // Функция создания экзаменационного билета
@@ -131,8 +142,7 @@ void showTickets(const ExamTicket tickets[], int ticketsCount) {
         for (int i = 0; i < ticketsCount; ++i) {
             cout << "| " << setw(15) << left << "№" << tickets[i].ticketID << " | " << setw(15) << left << tickets[i].subject << "|\n";
             for (int j = 0; j < 5; ++j) {
-                cout << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n"
-                    << "| Вопрос " << j + 1 << ": " << setw(15) << left << tickets[i].questions[j].questionText << ", тип вопроса: " << tickets[i].questions[j].questionType << endl;
+                cout << "| Вопрос " << j + 1 << ": " << setw(15) << left << tickets[i].questions[j].questionText << ", тип вопроса: " << tickets[i].questions[j].questionType << endl;
                 if (tickets[i].questions[j].questionType != 3) {
                     cout << "\tВарианты ответов:\n";
                     for (int k = 0; k < 4; ++k) {
@@ -140,30 +150,74 @@ void showTickets(const ExamTicket tickets[], int ticketsCount) {
                     }
                 }
             }
-            cout << "|_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|\n\n";
+            cout << "|_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|\n\n\n";
         }
         system("pause");
 }
 
 
 void searchTickets(const ExamTicket tickets[], int ticketsCount) {
-    string subject;
-    cout << "Введите предмет для поиска билетов: ";
-    //cin.ignore();
-    getline(cin, subject);
+    int choice;
+    cout << "\t\tВыберите параметр для поиска: \n";
+    cout << "\t1. Предмет\n";
+    cout << "\t2. Номер билета\n";
+    cout << "\t3. Тип вопроса\n";
+    cin >> choice;
+    cin.ignore();
+
     bool found = false;
-    for (int i = 0; i < ticketsCount; ++i) {
-        if (tickets[i].subject == subject) {
-            found = true;
-            cout << "Номер билета: " << tickets[i].ticketID << ", предмет: " << tickets[i].subject << endl;
+
+    switch (choice) {
+    case 1: {
+        string subject;
+        cout << "Введите предмет для поиска билетов: ";
+        getline(cin, subject);
+        for (int i = 0; i < ticketsCount; ++i) {
+            if (tickets[i].subject == subject) {
+                found = true;
+                cout << "Номер билета: " << tickets[i].ticketID << ", предмет: " << tickets[i].subject << endl;
+            }
         }
+        break;
+    }
+    case 2: {
+        int ticketID;
+        cout << "Введите номер билета для поиска: ";
+        cin >> ticketID;
+        for (int i = 0; i < ticketsCount; ++i) {
+            if (tickets[i].ticketID == ticketID) {
+                found = true;
+                cout << "Номер билета: " << tickets[i].ticketID << ", предмет: " << tickets[i].subject << endl;
+            }
+        }
+        break;
+    }
+    case 3: {
+        int questionType;
+        cout << "Введите тип вопроса для поиска: ";
+        cin >> questionType;
+        for (int i = 0; i < ticketsCount; ++i) {
+            for (int j = 0; j < 5; ++j) {
+                if (tickets[i].questions[j].questionType == questionType) {
+                    found = true;
+                    cout << "Номер билета: " << tickets[i].ticketID << ", предмет: " << tickets[i].subject << ", тип вопроса: " << tickets[i].questions[j].questionType << endl;
+                }
+            }
+        }
+        break;
+    }
+    default: {
+        cout << "Неверный выбор, попробуйте еще раз\n";
+        return searchTickets(tickets, ticketsCount);
+    }
     }
 
     if (!found) {
-        cout << "Экзаменационные билеты по заданному предмету не найдены.\n";
+        cout << "Экзаменационные билеты по заданному критерию не найдены.\n";
     }
     system("pause");
 }
+
 void sortTickets(ExamTicket tickets[], int ticketsCount) {
     int choice;
     do {
@@ -285,3 +339,32 @@ void loadTickets(const string& filename, ExamTicket tickets[], int& ticketsCount
 
     in.close();
 }
+
+void editQuestionInTicket(ExamTicket tickets[], int ticketsCount) {
+    int ticketID, questionNumber;
+    cout << "Введите номер билета, в котором хотите редактировать вопрос: ";
+    ticketID = protection(1, 100);
+    cout << "Введите номер вопроса, который хотите редактировать (1-5): ";
+    questionNumber = protection(1, 5);
+    for (int i = 0; i < ticketsCount; ++i) {
+        if (tickets[i].ticketID == ticketID) {
+            cout << "Введите новый текст вопроса: ";
+            cin.ignore();
+            getline(cin, tickets[i].questions[questionNumber - 1].questionText);
+
+            cout << "Введите новый тип вопроса: ";
+            tickets[i].questions[questionNumber - 1].questionType = protection(1, 5);
+
+            for (int j = 0; j < 4; ++j) {
+                cout << "Введите новый ответ " << j + 1 << ": ";
+                getline(cin, tickets[i].questions[questionNumber - 1].answers[j]);
+            }
+
+            cout << "Вопрос успешно отредактирован.\n";
+            return;
+        }
+    }
+
+    cout << "Билет с указанным ID не найден\n";
+}
+

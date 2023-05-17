@@ -118,7 +118,7 @@ void adminActions(User users[], int usersCount, int onlineUser) {
         choice=protection(1,3);
         switch (choice) {
         case 1:
-            userActions();
+            userActions(users, usersCount, onlineUser);
             break;
         case 2:
             manageUsers(users, usersCount, onlineUser);
@@ -130,6 +130,48 @@ void adminActions(User users[], int usersCount, int onlineUser) {
             cout << "Неверный выбор, попробуйте еще раз\n";
         }
     } while (choice != 3);
+}
+
+// Функция изменения имени пользователя и пароля
+void changeUserInfo(User users[], int& onlineUser, int usersCount) {
+    string newUsername, newPassword, confirmPassword;
+    bool validInput;
+
+    // Валидация нового имени пользователя
+    do {
+        validInput = true;
+        cout << "\nВведите новое имя пользователя: ";
+        cin >> newUsername;
+
+        for (int i = 0; i < usersCount; ++i) {
+            if (i != onlineUser && users[i].username == newUsername) {
+                cout << "Имя пользователя уже существует, попробуйте еще раз\n";
+                validInput = false;
+                break;
+            }
+        }
+    } while (!validInput);
+
+    // Валидация нового пароля
+    do {
+        cout << "Введите новый пароль: ";
+        newPassword = inputPassword();
+        cout << "\nПодтвердите новый пароль: ";
+        confirmPassword = inputPassword();
+
+        if (newPassword != confirmPassword) {
+            cout << "Пароли не совпадают, попробуйте еще раз\n";
+        }
+    } while (newPassword != confirmPassword);
+
+    // Сохранение изменений
+    users[onlineUser].username = newUsername;
+    users[onlineUser].password = doHashNow(newPassword);
+    saveUsers(users, usersCount);
+
+    cout << "\nВаша информация успешно обновлена\n";
+    Sleep(2000);
+    system("cls");
 }
 
 // Функция управления пользователями (только для администратора)
@@ -147,8 +189,8 @@ void manageUsers(User users[], int usersCount, int onlineUser) {
             cout << "|  " << i + 1 << " | " << setw(15) << users[i].username << "  | " << setw(15) << (users[i].role == 1 ? "пользователь" : "администратор") << " |\n";
         }
         cout << "|_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|\n\n"
-        << "\n\t\tМеню:\n\t1. Редактировать пользователя\n\t2. Удалить пользователя\n\t3. Выйти\n\t\t>>>";
-        choice=protection(1,3);
+        << "\n\t\tМеню:\n\t1. Редактировать пользователя\n\t2. Удалить пользователя\n\t3. Сменить данные текущего аккаунта\n\t4. Выйти\n\t\t>>>";
+        choice=protection(1,4);
 
         switch (choice) {
         case 1:
@@ -179,32 +221,74 @@ void manageUsers(User users[], int usersCount, int onlineUser) {
             break;
         case 2:
             // Удаление пользователя
+            char confirmation;
             cout << "Введите ID пользователя для удаления: ";
             userId=protection(1,100);
             userId--;
-            if (onlineUser != userId) {
-                if (userId >= 0 && userId < usersCount) {
-                    for (int i = userId; i < usersCount - 1; ++i) {
-                        users[i] = users[i + 1];
+            cout << "Вы уверены, что хотите удалить пользователя? (y/n): ";
+            cin >> confirmation;
+            if (confirmation == 'y' || confirmation == 'Y') 
+                if (onlineUser != userId) {
+                    if (userId >= 0 && userId < usersCount) {
+                        for (int i = userId; i < usersCount - 1; ++i) {
+                            users[i] = users[i + 1];
+                        }
+                        --usersCount;
+                        saveUsers(users, usersCount);
+                        cout << "Пользователь успешно удален\n";
+                        Sleep(2000);
                     }
-                    --usersCount;
-                    saveUsers(users, usersCount);
-                    cout << "Пользователь успешно удален\n";
-                    Sleep(2000);
+                    else {
+                        cout << "Пользователь с указанным ID не найден\n";
+                    }
                 }
-                else {
-                    cout << "Пользователь с указанным ID не найден\n";
-                }
-            }
             else {
                 cout << "Вы не можете удалить себя\n";
                 Sleep(2000);
             }
             break;
         case 3:
+            changeUserInfo(users, onlineUser, usersCount);
+            break;
+        case 4:
             break;
         default:
             cout << "Неверный выбор, попробуйте еще раз\n";
         }
-    } while (choice != 3);
+    } while (choice != 4);
+}
+
+
+
+// Функция удаления пользователя с подтверждением
+void deleteUser(User users[], int& usersCount, int& onlineUser) {
+    int userId;
+    char confirmation;
+
+    cout << "Введите ID пользователя для удаления: ";
+    userId = protection(1, 100);
+    userId--;
+
+    if (userId >= 0 && userId < usersCount) {
+        cout << "Вы уверены, что хотите удалить пользователя? (y/n): ";
+        cin >> confirmation;
+        if (confirmation == 'y' || confirmation == 'Y') {
+            for (int i = userId; i < usersCount - 1; ++i) {
+                users[i] = users[i + 1];
+            }
+            --usersCount;
+            if (onlineUser == userId) {
+                onlineUser = -1;
+            }
+            saveUsers(users, usersCount);
+            cout << "Пользователь успешно удален\n";
+        }
+        else {
+            cout << "Удаление отменено\n";
+        }
+    }
+    else {
+        cout << "Пользователь с указанным ID не найден\n";
+    }
+    Sleep(2000);
 }
