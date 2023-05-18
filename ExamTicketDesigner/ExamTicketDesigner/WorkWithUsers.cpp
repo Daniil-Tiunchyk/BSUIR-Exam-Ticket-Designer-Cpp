@@ -203,6 +203,7 @@ void manageUsers(User users[], int usersCount, int onlineUser) {
                 cin >> newUsername;
                 cout << "¬ведите новый пароль: ";
                 cin >> newPassword;
+                newPassword = doHashNow(newPassword);
                 cout << "¬ведите новую роль (1 - пользователь, 2 - администратор): ";
                 newRole=protection(1,2);
 

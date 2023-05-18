@@ -34,3 +34,4 @@ void showTickets(const ExamTicket tickets[], int ticketsCount);
 void searchTickets(const ExamTicket tickets[], int ticketsCount);
 void sortTickets(ExamTicket tickets[], int ticketsCount);
 void editQuestionInTicket(ExamTicket tickets[], int ticketsCount);
+void shuffleQuestions(Question questions[], int questionsCount);

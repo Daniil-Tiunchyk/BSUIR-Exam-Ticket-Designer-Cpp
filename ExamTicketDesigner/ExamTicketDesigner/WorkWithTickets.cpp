@@ -53,32 +53,108 @@ void userActions(User users[], int usersCount, int onlineUser) {
     } while (choice != 10);
 }
 
-// Функция создания экзаменационного билета
+// Вспомогательная функция для перемешивания вопросов
+void shuffleQuestions(Question questions[], int questionsCount) {
+    for (int i = 0; i < questionsCount - 1; ++i) {
+        int j = i + rand() % (questionsCount - i);
+        swap(questions[i], questions[j]);
+    }
+}
+
 void createTicket(ExamTicket tickets[], int& ticketsCount) {
-    ExamTicket newTicket;
-    cout << "Введите номер билета: ";
-    newTicket.ticketID = protection(1,100);
-    cout << "Введите предмет: ";
-    cin >> newTicket.subject;
-    cin.ignore();
-    for (int i = 0; i < 5; ++i) {
-        cout << "\nВведите текст вопроса " << i + 1 << ": ";
-        getline(cin, newTicket.questions[i].questionText);
-        cout << "Введите тип вопроса (1 - выбор одного ответа, 2 - выбор нескольких ответов, 3 - вопрос с открытым ответом): ";
-        newTicket.questions[i].questionType = protection(1,3);
-        if (newTicket.questions[i].questionType != 3) {
-            for (int j = 0; j < 4; ++j) {
-                cout << "\tВведите вариант ответа " << j + 1 << ": ";
+    int choice;
+    cout << "\t1. Генерация одного билета\n\t2. Ввод списка вопросов\n\t3. Назад\n\t\t>>> ";
+    choice = protection(1, 3);
+
+    switch (choice) {
+    case 1: {
+        ExamTicket newTicket;
+        cout << "Введите номер билета: ";
+        newTicket.ticketID = protection(1, 100);
+        cout << "Введите предмет: ";
+        cin >> newTicket.subject;
+        cin.ignore();
+        for (int i = 0; i < 5; ++i) {
+            cout << "\nВведите текст вопроса " << i + 1 << ": ";
+            getline(cin, newTicket.questions[i].questionText);
+            cout << "Введите тип вопроса (1 - выбор одного ответа, 2 - выбор нескольких ответов, 3 - вопрос с открытым ответом): ";
+            newTicket.questions[i].questionType = protection(1, 3);
+            if (newTicket.questions[i].questionType != 3) {
+                for (int j = 0; j < 4; ++j) {
+                    cout << "\tВведите вариант ответа " << j + 1 << ": ";
                     getline(cin, newTicket.questions[i].answers[j]);
+                }
             }
         }
-    }
 
-    tickets[ticketsCount++] = newTicket;
+        tickets[ticketsCount++] = newTicket;
         saveTickets(ticketsFilename, tickets, ticketsCount);
 
         cout << "Экзаменационный билет успешно создан\n";
+        system("pause");
+        break;
+    }
+    case 2: {
+        Question questions[100];
+        int questionsCount = 0;
+
+        cout << "Введите вопросы (напишите \"Стоп\" для завершения):\n";
+        while (true) {
+            string input;
+            getline(cin, input);
+
+            if (input == "Стоп") break;
+
+            // Сохраняем вопрос
+            questions[questionsCount].questionText = input;
+
+            cout << "Введите тип вопроса (1 - выбор одного ответа, 2 - выбор нескольких ответов, 3 - вопрос с открытым ответом): ";
+            questions[questionsCount].questionType = protection(1, 3);
+            if (questions[questionsCount].questionType != 3) {
+                for (int j = 0; j < 4; ++j) {
+                    cout << "\tВведите вариант ответа " << j + 1 << ": ";
+                    getline(cin, questions[questionsCount].answers[j]);
+                }
+            }
+            questionsCount++;
+        }
+
+        // Перемешиваем вопросы
+        shuffleQuestions(questions, questionsCount);
+
+        // Создаем билеты
+        while (questionsCount >= 5) {
+            ExamTicket newTicket;
+            newTicket.ticketID = ticketsCount + 1;
+            cout << "Введите предмет для билета " << newTicket.ticketID << ": ";
+            cin >> newTicket.subject;
+            cin.ignore();
+
+            // Заполняем билет вопросами
+            for (int i = 0; i < 5; ++i) {
+                newTicket.questions[i] = questions[questionsCount - 5 + i];
+            }
+            tickets[ticketsCount++] = newTicket;
+            saveTickets(ticketsFilename, tickets, ticketsCount);
+            questionsCount -= 5;
+        }
+
+        // Если остались вопросы, выводим их на экран
+        if (questionsCount > 0) {
+            cout << "Остались невостребованные вопросы:\n";
+            for (int i = 0; i < questionsCount; ++i) {
+                cout << "\tВопрос " << i + 1 << ": " << questions[i].questionText << "\n";
+            }
+        }
+        cout << "\nЭкзаменационные билеты успешно созданы\n";
+        system("pause");
+        break;
+    }
+    case 3:
+        return;
+    }
 }
+
 // Функция редактирования экзаменационного билета
 void editTicket(ExamTicket tickets[], int ticketsCount) {
     int ticketID;
@@ -367,4 +443,3 @@ void editQuestionInTicket(ExamTicket tickets[], int ticketsCount) {
 
     cout << "Билет с указанным ID не найден\n";
 }
-
