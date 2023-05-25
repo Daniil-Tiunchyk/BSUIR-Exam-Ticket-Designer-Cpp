@@ -154,15 +154,18 @@ void changeUserInfo(User users[], int& onlineUser, int usersCount) {
 
     // Валидация нового пароля
     do {
-        cout << "Введите новый пароль: ";
+        cout << "\nВведите новый пароль: ";
         newPassword = inputPassword();
         cout << "\nПодтвердите новый пароль: ";
         confirmPassword = inputPassword();
 
         if (newPassword != confirmPassword) {
-            cout << "Пароли не совпадают, попробуйте еще раз\n";
-        }
-    } while (newPassword != confirmPassword);
+            cout << "\nПароли не совпадают, попробуйте еще раз\n";
+        }         
+        if (doHashNow(newPassword) == users[onlineUser].password)
+            cout << "\nВаш текущий пароль и пароль, на которых вы хотите поменять, совпадают!  Попробуйте еще раз";
+
+    } while ((newPassword != confirmPassword) || (doHashNow(newPassword) == users[onlineUser].password));
 
     // Сохранение изменений
     users[onlineUser].username = newUsername;
