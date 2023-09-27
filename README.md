@@ -16,7 +16,7 @@
 Для использования этой программы, клонируйте репозиторий на вашу локальную машину и скомпилируйте исходный код с помощью компилятора C++.
 
 ```bash
-git clone https://github.com/Heimdall-Program/Exam-Ticket-Designer.git
+git clone https://github.com/Daniil-Tsiunchyk/Exam-Ticket-Designer.git
 ```
 
 ## Использование
